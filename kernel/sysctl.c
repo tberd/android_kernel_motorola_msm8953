@@ -63,6 +63,8 @@
 #include <linux/binfmts.h>
 #include <linux/sched/sysctl.h>
 #include <linux/kexec.h>
+#include <linux/bpf.h>
+#include <linux/mount.h>
 
 #include <asm/uaccess.h>
 #include <asm/processor.h>
@@ -1425,14 +1427,15 @@ static struct ctl_table kern_table[] = {
 		.extra2		= &mmap_rnd_bits_max,
 	},
 #endif
-#if defined(CONFIG_TREE_RCU) || defined(CONFIG_PREEMPT_RCU)
+#ifdef CONFIG_BPF_SYSCALL
 	{
-		.procname	= "panic_on_rcu_stall",
-		.data		= &sysctl_panic_on_rcu_stall,
-		.maxlen		= sizeof(sysctl_panic_on_rcu_stall),
+		.procname	= "unprivileged_bpf_disabled",
+		.data		= &sysctl_unprivileged_bpf_disabled,
+		.maxlen		= sizeof(sysctl_unprivileged_bpf_disabled),
 		.mode		= 0644,
+		/* only handle a transition from default "0" to "1" */
 		.proc_handler	= proc_dointvec_minmax,
-		.extra1		= &zero,
+		.extra1		= &one,
 		.extra2		= &one,
 	},
 #endif
