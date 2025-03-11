@@ -114,7 +114,7 @@ static int bpf_map_release(struct inode *inode, struct file *filp)
 }
 
 #ifdef CONFIG_PROC_FS
-static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
+static int bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
 {
 	const struct bpf_map *map = filp->private_data;
 
@@ -127,6 +127,7 @@ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
 		   map->key_size,
 		   map->value_size,
 		   map->max_entries);
+	return 0;	
 }
 #endif
 
