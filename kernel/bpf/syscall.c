@@ -127,7 +127,8 @@ static int bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
 		   map->key_size,
 		   map->value_size,
 		   map->max_entries);
-	return 0;	
+
+	return 0;
 }
 #endif
 
