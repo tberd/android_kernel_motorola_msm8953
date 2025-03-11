@@ -3336,6 +3336,7 @@ static int perf_event_read(struct perf_event *event, bool group)
 			update_event_times(event);
 		raw_spin_unlock_irqrestore(&ctx->lock, flags);
 	}
+	return perf_event_count(event);
 }
 
 /*
@@ -7939,7 +7940,6 @@ SYSCALL_DEFINE5(perf_event_open,
 			 */
 			if (gctx != ctx) {
 				err = -EINVAL;
-				goto err_locked;
 			} else {
 				perf_event_ctx_unlock(group_leader, gctx);
 				move_group = 0;
@@ -7969,15 +7969,7 @@ SYSCALL_DEFINE5(perf_event_open,
 		}
 	} else {
 		mutex_lock(&ctx->mutex);
-
-		/*
-		 * Now that we hold ctx->lock, (re)validate group_leader->ctx == ctx,
-		 * see the group_leader && !move_group test earlier.
-		 */
-		if (group_leader && group_leader->ctx != ctx) {
-			err = -EINVAL;
-			goto err_locked;
-		}
+			
 	}
 not_move_group:
 
